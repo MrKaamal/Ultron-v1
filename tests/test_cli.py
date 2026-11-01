@@ -39,6 +39,12 @@ def test_version_and_help(capsys: pytest.CaptureFixture[str]) -> None:
     assert main([]) == 0 and "usage: ultron" in capsys.readouterr().out
 
 
+def test_package_exposes_version() -> None:
+    from ultron import __version__
+
+    assert __version__
+
+
 def test_run_answers_a_question(cli: Cli) -> None:
     rc, out, _ = cli("run", "What is 17 * 23?")
     assert rc == 0 and "391" in out and "success" in out and "offline demo brain" in out
