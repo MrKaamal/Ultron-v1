@@ -10,7 +10,9 @@ from helpers import FakeServer
 from ultron.errors import ProviderError
 from ultron.messages import Message, ToolCall, ToolResult
 from ultron.netutil import is_loopback_host, post_json
+from ultron.providers import make_provider, resolve_provider_name
 from ultron.redact import REPLACEMENT, Redactor, env_secrets, redact
+from ultron.tools import ToolRegistry, build_registry
 from ultron.util import clip, human_size, new_run_id, utc_iso
 
 
@@ -89,3 +91,12 @@ def test_message_size_counts_text_calls_and_results() -> None:
     message = Message.assistant("abc", [ToolCall("1", "calc", {"expression": "1+1"})])
     assert message.size() > len("abc") + len("calc")
     assert Message.tool([ToolResult("1", "calc", "x" * 10)]).size() == 10
+
+
+def test_package_exports_for_entrypoints() -> None:
+    import ultron
+
+    assert isinstance(ultron.__version__, str) and ultron.__version__
+    assert callable(resolve_provider_name) and callable(make_provider)
+    assert ToolRegistry.__name__ == "ToolRegistry"
+    assert callable(build_registry)
