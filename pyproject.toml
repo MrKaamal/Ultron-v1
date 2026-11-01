@@ -1,0 +1,59 @@
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[project]
+name = "ultron-agent"
+version = "0.1.0"
+description = "ULTRON: a local-first autonomous agent prototype with guardrails (sandbox, approvals, kill switch, tamper-evident audit log)."
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+requires-python = ">=3.11"
+authors = [{ name = "MrKaamals" }]
+keywords = ["ai", "agent", "llm", "autonomous", "automation", "claude", "ollama", "guardrails", "safety"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Environment :: Console",
+  "Intended Audience :: Developers",
+  "Operating System :: POSIX :: Linux",
+  "Operating System :: MacOS",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+# Zero runtime dependencies: the whole agent runs on the standard library.
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "ruff>=0.6"]
+
+[project.scripts]
+ultron = "ultron.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/ultron"]
+
+[tool.hatch.build.targets.sdist]
+include = ["src", "tests", "skills", "examples", "docs", "README.md", "LICENSE", "CHANGELOG.md", "pyproject.toml"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+addopts = "-q -ra"
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+src = ["src", "tests", "skills"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM", "S"]
+
+[tool.ruff.lint.per-file-ignores]
+# The system prompt is prose; wrapping it would change what the model reads.
+"src/ultron/prompts.py" = ["E501"]
+# Tests may use assert, hard-coded fake secrets, and throw-away temp paths.
+"tests/**" = ["S101", "S105", "S106", "S108", "S603", "S607"]
