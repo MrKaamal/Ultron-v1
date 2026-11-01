@@ -218,3 +218,30 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Secrets and local state: never commit these
+.env
+.env.*
+!.env.example
+.ultron/
+data/
+ultron.toml
+workspace/
+
+# Editors / OS
+.idea/
+.vscode/
+.DS_Store

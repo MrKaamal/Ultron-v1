@@ -1,0 +1,26 @@
+# docker compose run --rm ultron run "Summarize the files in the workspace"
+# docker compose up sentinel
+x-ultron: &ultron
+  build: .
+  env_file:
+    - path: .env
+      required: false
+  volumes:
+    - ./data:/data            # workspace, state, inbox/outbox and skills live here
+  read_only: true             # the image itself cannot be modified
+  tmpfs:
+    - /tmp
+  cap_drop: [ALL]
+  security_opt: ["no-new-privileges:true"]
+  pids_limit: 128
+  mem_limit: 512m
+
+services:
+  ultron:
+    <<: *ultron
+  sentinel:
+    <<: *ultron
+    # Unattended: nobody can approve anything, so risky tools run only if you opt in with 'auto'.
+    # 'auto' is acceptable here because the container is the boundary. Remove the flag to decline them instead.
+    command: ["sentinel", "--approval", "auto"]
+    restart: unless-stopped
