@@ -89,3 +89,13 @@ def test_message_size_counts_text_calls_and_results() -> None:
     message = Message.assistant("abc", [ToolCall("1", "calc", {"expression": "1+1"})])
     assert message.size() > len("abc") + len("calc")
     assert Message.tool([ToolResult("1", "calc", "x" * 10)]).size() == 10
+
+
+def test_package_exports_are_importable() -> None:
+    from ultron.providers import make_provider, resolve_provider_name
+    from ultron.tools import ToolRegistry, build_registry
+
+    assert callable(make_provider)
+    assert callable(resolve_provider_name)
+    assert callable(build_registry)
+    assert ToolRegistry.__name__ == "ToolRegistry"
